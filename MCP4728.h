@@ -5,27 +5,7 @@
    Header for MCP4728.c
 */
 
-#define UNDEFINED 0xFFFF
-
-/* TINY GPIO VARIABLES */
-
-#define GPSET0 7
-#define GPSET1 8
-
-#define GPCLR0 10
-#define GPCLR1 11
-
-#define GPLEV0 13
-#define GPLEV1 14
-
-#define GPPUD     37
-#define GPPUDCLK0 38
-#define GPPUDCLK1 39
-
-#define PI_BANK (gpio>>5)
-#define PI_BIT  (1<<(gpio&0x1F))
-
-/* gpio modes */
+/* gpio modes (Tiny GPIO) */
 
 #define PI_INPUT  0
 #define PI_OUTPUT 1
@@ -36,7 +16,7 @@
 #define PI_ALT4   3
 #define PI_ALT5   2
 
-/* values for pull-ups/downs off, pull-down && pull-up */
+/* values for pull-ups/downs off, pull-down && pull-up (Tiny GPIO) */
 
 #define PI_PUD_OFF  0
 #define PI_PUD_DOWN 1
@@ -80,3 +60,16 @@ int multipleinternal(struct chip *tempchip, float volts[], bool eeprom);
 /* writes four values to DAC channels using external reference */
 int multipleexternal(struct chip *tempchip, float rels[], bool eeprom);
 
+/* ---------------- Tiny GPIO functions ----------------------- */
+
+void gpioSetMode(unsigned gpio, unsigned mode);
+
+int gpioGetMode(unsigned gpio);
+
+void gpioSetPullUpDown(unsigned gpio, unsigned pud);
+
+int gpioRead(unsigned gpio);
+
+void gpioWrite(unsigned gpio, unsigned level);
+
+int gpioInitialise(void);

@@ -18,6 +18,26 @@
 
 #include "MCP4728.h"
 
+#define UNDEFINED 0xFFFF
+
+/* TINY GPIO VARIABLES */
+
+#define GPSET0 7
+#define GPSET1 8
+
+#define GPCLR0 10
+#define GPCLR1 11
+
+#define GPLEV0 13
+#define GPLEV1 14
+
+#define GPPUD     37
+#define GPPUDCLK0 38
+#define GPPUDCLK1 39
+
+#define PI_BANK (gpio>>5)
+#define PI_BIT  (1<<(gpio&0x1F))
+
 /* GPIO address */
 static volatile uint32_t  *gpioReg = MAP_FAILED;
 
@@ -103,7 +123,7 @@ int gpioInitialise(void)
 /* LOCAL GPIO METHODS */
 /* all assume && leave SCL low, except when specified differently */
 
-/* starts GPIO communication */
+/* start GPIO communication */
 void start_gpio()
 {
    gpioWrite(curchip->sda,0);
@@ -117,7 +137,7 @@ void start_gpio()
    gpioSetMode(curchip->ldac, PI_INPUT);
 }
 
-/* stops GPIO communication */
+/* stop GPIO communication */
 void stop_gpio()
 {
    if ((curchip->bus == 0) || (curchip->bus == 1))
@@ -271,7 +291,7 @@ void i2csendnack()
 
 /* LOCAL I2C METHODS */
 
-/* sets I2C address */
+/* set I2C address */
 int address_i2c()
 {
    int file_i2c;
@@ -283,7 +303,7 @@ int address_i2c()
    return(0);
 }
 
-/* writes multiple raw values to the specified DAC channels - channels 1 to 4, EEPROM not affected */
+/* write multiple raw values to the specified DAC channels - channels 1 to 4, EEPROM not affected */
 int multiple_raw(unsigned size, unsigned channels[], unsigned reference, unsigned gains[], unsigned values[])
 {
    unsigned i;
@@ -347,7 +367,7 @@ int single_raw(unsigned channel, unsigned reference, unsigned gain, unsigned val
 
 /* GLOBAL INITIALIZATION METHODS */
 
-/* initialises communications */
+/* initialise communications */
 struct chip *initialise(int sda, int scl, int ldac, int address)
 {
    struct chip *tempchip = malloc(sizeof(struct chip));
@@ -419,7 +439,7 @@ int deinitialise(struct chip *tempchip)
 
 /* GLOBAL GPIO METHODS */
 
-/* gets the DAC address */
+/* get the DAC address */
 int getaddress(struct chip *tempchip)
 {
    unsigned i;
@@ -469,7 +489,7 @@ int getaddress(struct chip *tempchip)
    return(ret);
 }
 
-/* sets the DAC address */
+/* set the DAC address */
 int setaddress(struct chip *tempchip, unsigned addr)
 {
    unsigned i;
@@ -514,7 +534,7 @@ int setaddress(struct chip *tempchip, unsigned addr)
 
 /* GLOBAL I2C METHODS */
 
-/* writes single value to the selected DAC channel using internal reference - channels 1 to 4 */
+/* write single value to the selected DAC channel using internal reference - channels 1 to 4 */
 int singleinternal(struct chip *tempchip, int channel, float volt, bool eeprom)
 {
    unsigned gain=1;
@@ -530,7 +550,7 @@ int singleinternal(struct chip *tempchip, int channel, float volt, bool eeprom)
    else return(multiple_raw(1,(unsigned[]){(unsigned)channel},1,(unsigned[]){gain-1},(unsigned[]){value}));
 }
 
-/* writes single value to the selected DAC channel using external reference - channels 1 to 4 */
+/* write single value to the selected DAC channel using external reference - channels 1 to 4 */
 int singleexternal(struct chip *tempchip, int channel, float rel, bool eeprom)
 {
    unsigned value;
@@ -544,7 +564,7 @@ int singleexternal(struct chip *tempchip, int channel, float rel, bool eeprom)
    else return(multiple_raw(1,(unsigned[]){(unsigned)channel},0,(unsigned[]){0},(unsigned[]){value}));
 }
 
-/* writes four values to the DAC channels using internal reference */
+/* write four values to the DAC channels using internal reference */
 int multipleinternal(struct chip *tempchip, float volts[], bool eeprom)
 {
    unsigned i;
@@ -567,7 +587,7 @@ int multipleinternal(struct chip *tempchip, float volts[], bool eeprom)
    else return(multiple_raw(4,(unsigned[]){1,2,3,4},1,gains,values));
 }
 
-/* writes four values to DAC channels using external reference */
+/* write four values to DAC channels using external reference */
 int multipleexternal(struct chip *tempchip, float rels[], bool eeprom)
 {
    unsigned i;

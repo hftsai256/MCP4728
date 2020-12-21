@@ -33,31 +33,30 @@ struct chip
    unsigned bus;
 };
 
-
 /* ---------------- public functions ----------------------- */
 
-/* initialises communications */
+/* initialise communications */
 struct chip *initialise(int sda, int scl, int ldac, int address);
 
 /* deinitialise communications */
 int deinitialise(struct chip *tempchip);
 
-/* gets the DAC address */
+/* get the DAC address */
 int getaddress(struct chip *tempchip);
 
-/* sets the DAC address */
+/* set the DAC address */
 int setaddress(struct chip *tempchip, unsigned addr);
 
-/* writes single value to the selected DAC channel using internal reference - channels 1 to 4 */
+/* write single value to the selected DAC channel using internal reference - channels 1 to 4 */
 int singleinternal(struct chip *tempchip, int channel, float volt, bool eeprom);
 
-/* writes single value to the selected DAC channel using external reference - channels 1 to 4 */
+/* write single value to the selected DAC channel using external reference - channels 1 to 4 */
 int singleexternal(struct chip *tempchip, int channel, float rel, bool eeprom);
 
-/* writes four values to the DAC channels using internal reference */
+/* write four values to the DAC channels using internal reference */
 int multipleinternal(struct chip *tempchip, float volts[], bool eeprom);
 
-/* writes four values to DAC channels using external reference */
+/* write four values to DAC channels using external reference */
 int multipleexternal(struct chip *tempchip, float rels[], bool eeprom);
 
 /* ---------------- Tiny GPIO functions ----------------------- */

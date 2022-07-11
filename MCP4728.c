@@ -2,7 +2,7 @@
    Marko Pinteric 2020
    GPIO communication based on Tiny GPIO Access on http://abyz.me.uk/rpi/pigpio/examples.html
 
-   Create shared object with: gcc -o MCP4728.so -shared -fPIC MCP4728.c
+   Header for MCP4728.c
 */
 
 #include <stdio.h>

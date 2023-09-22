@@ -504,22 +504,26 @@ int setaddress(struct chip *tempchip, unsigned addr)
    addr_cur = curchip->address & 0x07;
    addr_new = addr & 0x07;
 
+   gpioSetMode(curchip->ldac, PI_OUTPUT);
+   gpioWrite(curchip->ldac, 1);
+
    i2cstart();
    i2csendbyte(0xC0 | (addr_cur << 1));
    errs[0]=i2cgetack();
    i2csendbyte(0x61 | (addr_cur << 2));
-   gpioSetMode(curchip->ldac, PI_OUTPUT);
+   gpioWrite(curchip->ldac, 0);
    errs[1]=i2cgetack();
    i2csendbyte(0x62 | (addr_new << 2));
    errs[2]=i2cgetack();
    i2csendbyte(0x63 | (addr_new << 2));
-   gpioSetMode(curchip->ldac, PI_INPUT);
+   gpioWrite(curchip->ldac, 1);
    errs[3]=i2cgetack();
    i2cstop();
+   gpioSetMode(curchip->ldac, PI_INPUT);
 
    for (i=0; i<=3; i++)
    {
-      if (errs[i]==0) err = err | (0x04 >> i);
+      if (errs[i]==0) err = err | (0x08 >> i);
    }
    if (err>0) ret=-(int)err;
    else
